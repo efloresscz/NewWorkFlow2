@@ -73,4 +73,5 @@ create table wfsgt                      -- SEGUIMIENTO X GLOSA
 	wfsgtglos	CHAR(2000)              -- Glosa
 )
 
+SE CREARA NUEVAS TABLAS
 
