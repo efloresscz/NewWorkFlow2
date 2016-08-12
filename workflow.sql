@@ -1,28 +1,55 @@
 create table wfmso						-- SOLICITUDES REGISTRADAS PARA WF DATOS GENERALES
 (
 	wfmsonsol	DECIMAL(20,0) NOT NULL, -- Nro. Solicitud PK
-	wfmsoprod	SMALLINT NOT NULL,		-- Producto (netbank,sai) --> gbcon
+	wfmsofsol	SMALLINT NOT NULL,		-- Forma de Solicitud wfcon(Formal,Informal)
+	wfmsoprod	SMALLINT NOT NULL,		-- Producto (netbank,sai) --> wfcon(wfconpref = 1)
 	wfmsonmod	SMALLINT NOT NULL,		-- Modulo
+	wfmsotsol	SMALLINT NOT NULL,		-- Tipo de Solicitud wfcon (Solicitud Nuevo Prestamo,Refinanciamiento,Solicitud Banca)
 	wfmsonope	DECIMAL(20,0) NOT NULL,	-- Nro. Operacion
 	wfmsofreg	DATE NOT NULL,          -- Fecha de Registro 
+	wfmsofent	DATE NOT NULL,          -- Fecha de Estimada Entrega
 	wfmsonpro	SMALLINT NOT NULL,		-- Proceso o Flujo
 	wfmsocage	INTEGER NOT NULL,		-- Nro. Solicitud
 	wfmsomsol	DEC(14,2) NOT NULL,		-- Importe Solicitado
 	wfmsomapr	DEC(14,2) NOT NULL,		-- Importe Aprobado
 	wfmsocmon   SMALLINT NOT NULL,		-- Moneda
-	wfmsostat   SMALLINT NOT NULL,		-- Estado 1=Proceso 2=Concluido 3=Rechazado
+	
+	wfmsotinc	SMALLINT NOT NULL,		-- Tipo de Incidencia wfcon (Requerimiento Servicio,Solucion Problema)
+	wfmsoprio	SMALLINT NOT NULL,		-- Prioridad wfcon (Alta Normal Baja)
+	wfmsostat   SMALLINT NOT NULL,		-- Estado 1=Por Hacer 2=En curso 3=Terminado
+	wfmsoures	CHAR(20),		        -- Usuario Responsable de la Solicitud
+	wfmsouaut	CHAR(20),		        -- Usuario Autorizador de la Solicitud
 	wfmsoresp	INTEGER,		        -- Responsable
-	wfmsoglos   CHAR(500),		        -- Observacion    
+	wfmsoautp	INTEGER,		        -- Autorizado
+	wfmsoresu   CHAR(100),		        -- Resumen o Titulo de la Solicitud(Ejplo:Solicitud de Nuevo Prestamo )
+	wfmsodesc   CHAR(500),		        -- Descripcion de la Solicitud (Ejplo: Solicitud de Nuevo Prestamo para la Empresa BIBOSI)
 	wfmsomrcb   SMALLINT NOT NULL,		-- Marca 0=Alta 9=Baja
-	wfmsouser	CHAR(3) NOT NULL,		-- Usuario
+	wfmsouser	CHAR(20) NOT NULL,		-- Usuario
 	wfmsohora	CHAR(8) NOT NULL,		-- Hora
-	wfmsofpro   DATE NOT NULL,			-- Fecha
+	wfmsofpro   DATE NOT NULL			-- Fecha
+)
+
+
+create table wfres  					-- RESOLUCION DE SOLICITUD
+(	
+	wfresnsol	DECIMAL(20,0) NOT NULL, -- Nro. Solicitud 
+	wfresreso	SMALLINT NOT NULL	    -- Tipo de Resolucion (1=Listo Terminado 2=Rechazado 3=Duplicado 4=Etc. )
+	wfresfreg	DATE NOT NULL	    	-- Fecha de Resolucion
+	wfresuser	CHAR(20) NOT NULL,		-- Usuario
+	wfreshora	CHAR(8) NOT NULL,		-- Hora
+	wfresfpro   DATE NOT NULL			-- Fecha	
+)
+
+create table wftac  					-- TAREA ACTUAL DE LA SOLICITUD
+(	
+	wftacnsol	DECIMAL(20,0) NOT NULL, -- Nro. Solicitud 
+	wftacntar	INTEGER NOT NULL	    -- Tarea Actual
 )
 
 create table wfsop						-- SOLICITUDES MATERIALIZADAS EN OPERACION
 (	
 	wfsopnsol	DECIMAL(20,0) NOT NULL, -- Nro. Solicitud 
-	wfsopnope	DECIMAL(20,0) NOT NULL	-- Nro. Operacion Creada	
+	wfsopnope	DECIMAL(20,0) NOT NULL	-- Nro. Operacion Creada Modulo Correspondiente	
 )
 
 create table wfrch						-- SOLICITUDES RECHAZADAS
@@ -33,9 +60,9 @@ create table wfrch						-- SOLICITUDES RECHAZADAS
 	wfrchcrch	SMALLINT NOT NULL,		-- Codigo de Rechazo
 	wfrchdesc	CHAR(1000),				-- Glosa o Descripcion del Rechazo
 	wfrchfreg   DATE NOT NULL,			-- Fecha de Registro
-	wfrchuser   CHAR(3) NOT NULL,		-- Usuario
+	wfrchuser   CHAR(20) NOT NULL,		-- Usuario
 	wfrchhora	CHAR(8) NOT NULL,		-- Hora
-	wfrchfpro   DATE NOT NULL,			-- Fecha
+	wfrchfpro   DATE NOT NULL			-- Fecha
 	
 )
 
@@ -46,32 +73,33 @@ create table wfsgt                      -- SEGUIMIENTO DE SOLICITUDES FECHAS DE 
     wfsgtnpro   INTEGER NOT NULL,       -- Proceso o Flujo
 	wfsgtntar   INTEGER NOT NULL,       -- Tarea
 	wfsgtacci   SMALLINT NOT NULL,      -- Accion Realizada (1=Retorno 2=Aceptacion 3=Rechazo)
-	wfsgtstat   SMALLINT NOT NULL,      -- Estado 1=Pendiente 2=Realizado	
-	wfsgtresp   INTEGER NOT NULL,       -- Responsable de la Tarea	
+	wfsgtstat   SMALLINT NOT NULL,      -- Estado 1=Pendiente 2=Realizado 	
+	wfsgtures   CHAR(20) NOT NULL,      -- Usuario Responsable de la Tarea	
 	wfsgtfreg   DATE NOT NULL,          -- Fecha Registro
-	wfsgthreg   DATE NOT NULL,          -- Hora Registro
-	wfsgtfini   DATE NOT NULL,          -- Fecha Inicio de la Tarea  (Ingresa a la Opcion Seguimiento)
-	wfsgthini   CHAR(8) NOT NULL,       -- Hora Inicio de la Tarea   (Ingresa a la Opcion Seguimiento)
-	wfsgtffin   DATE NOT NULL,          -- Fecha Finalizacion de la Tarea
+	wfsgthreg   CHAR(8) NOT NULL,       -- Hora Registro
+	wfsgtfini   DATE,                   -- Fecha Inicio de la Tarea  (Ingresa a la Opcion Seguimiento)
+	wfsgthini   CHAR(8) NOT NULL,       -- Hora Inicio Registro
+	wfsgtffin   DATE,                   -- Fecha Finalizacion de la Tarea
 	wfsgthfin   CHAR(8) NOT NULL,       -- Hora Finalizacion de la Tarea
-	wfsgtuser   CHAR(3) NOT NULL,		-- Usuario
+	wfsgtuser   CHAR(20) NOT NULL,		-- Usuario
 	wfsgthora	CHAR(8) NOT NULL,		-- Hora
-	wfsgtfpro   DATE NOT NULL,			-- Fecha
+	wfsgtfpro   DATE NOT NULL			-- Fecha
 )
 
-create table wfsgt                      -- SEGUIMIENTO X GLOSA
+create table wfsco                      -- SEGUIMIENTO X COMENTARIO
 (
-	wfsgtcsgt	DECIMAL(20,0) NOT NULL, -- Nro. Seguimiento PK
-	wfsgttopi	SMALLINT NOT NULL,      -- Tipo Opinion
-	wfsgtglos	CHAR(2000)              -- Glosa
+	wfscocsgt	DECIMAL(20,0) NOT NULL, -- Nro. Seguimiento PK
+	wfscoitem	INTEGER NOT NULL,       -- Item Comentario
+	wfscotopi	SMALLINT NOT NULL,      -- Tipo Opinion wfcon(Favorable,Desfavorable,Vetado)
+	wfscotcom	SMALLINT NOT NULL,      -- Tipo Comentario wfcon(Interno,Externo)
+	wfscodesc	CHAR(2000),             -- Descripcion
+	wfscofreg	DATE NOT NULL,          -- Fecha Registro
+	wfsgtuser   CHAR(20) NOT NULL,		-- Usuario
+	wfsgthora	CHAR(8) NOT NULL,		-- Hora
+	wfsgtfpro   DATE NOT NULL			-- Fecha	
 )
 
-create table wfsgt                      -- SEGUIMIENTO X GLOSA
-(
-	wfsgtcsgt	DECIMAL(20,0) NOT NULL, -- Nro. Seguimiento PK
-	wfsgttopi	SMALLINT NOT NULL,      -- Tipo Opinion
-	wfsgtglos	CHAR(2000)              -- Glosa
-)
 
-SE CREARA NUEVAS TABLAS
+
+
 
