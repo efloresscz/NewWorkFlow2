@@ -29,7 +29,6 @@ create table wfmso						-- SOLICITUDES REGISTRADAS PARA WF DATOS GENERALES
 	wfmsofpro   DATE NOT NULL			-- Fecha
 )
 
-
 create table wfres  					-- RESOLUCION DE SOLICITUD
 (	
 	wfresnsol	DECIMAL(20,0) NOT NULL, -- Nro. Solicitud 
@@ -56,7 +55,7 @@ create table wfrch						-- SOLICITUDES RECHAZADAS
 (
 	wfrchnsol	DECIMAL(20,0) NOT NULL, -- Nro. Solicitud 	
 	wfrchnpro	INTEGER NOT NULL, 		-- Proceso o Flujo
-	wfrchntar	INTEGER NOT NULL, 		-- Tarea
+	wfrchntar	INTEGER NOT NULL, 		-- Tarea donde fue Rechazada
 	wfrchcrch	SMALLINT NOT NULL,		-- Codigo de Rechazo
 	wfrchdesc	CHAR(1000),				-- Glosa o Descripcion del Rechazo
 	wfrchfreg   DATE NOT NULL,			-- Fecha de Registro
@@ -81,6 +80,16 @@ create table wfsgt                      -- SEGUIMIENTO DE SOLICITUDES FECHAS DE 
 	wfsgthini   CHAR(8) NOT NULL,       -- Hora Inicio Registro
 	wfsgtffin   DATE,                   -- Fecha Finalizacion de la Tarea
 	wfsgthfin   CHAR(8) NOT NULL,       -- Hora Finalizacion de la Tarea
+	wfsgtuser   CHAR(20) NOT NULL,		-- Usuario
+	wfsgthora	CHAR(8) NOT NULL,		-- Hora
+	wfsgtfpro   DATE NOT NULL			-- Fecha
+)
+
+create table wfcsg                      -- CREACION SEGUIMIENTO 
+(
+	wfsgtcsga	DECIMAL(20,0) NOT NULL, -- Nro. Seguimiento Actual
+    wfsgtcsgn	DECIMAL(20,0) NOT NULL, -- Nro. Seguimiento Nuevo
+	wfsgttcre	DECIMAL(20,0) NOT NULL, -- Tipo Creacion wfcon(1=Normal 2=Especial)
 	wfsgtuser   CHAR(20) NOT NULL,		-- Usuario
 	wfsgthora	CHAR(8) NOT NULL,		-- Hora
 	wfsgtfpro   DATE NOT NULL			-- Fecha
